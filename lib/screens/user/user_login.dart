@@ -1,38 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:librarymanagementsystem/screens/admin/admin_home_page.dart';
+import 'package:librarymanagementsystem/screens/user/user_register.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:librarymanagementsystem/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarymanagementsystem/components/rounded_button.dart';
+import '../../constants.dart';
+import 'user_page.dart';
 
-class AdminLogin extends StatefulWidget {
-  static const String id = 'admin_login_screen';
+class UserLogin extends StatefulWidget {
+  static const String id = 'user_login_screen';
   @override
-  _AdminLoginState createState() => _AdminLoginState();
+  _UserLoginState createState() => _UserLoginState();
 }
 
-class _AdminLoginState extends State<AdminLogin> {
+class _UserLoginState extends State<UserLogin> {
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String email;
   String password;
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Administration',
+          'User',
         ),
-        backgroundColor: Colors.lightBlueAccent,
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.all(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -40,7 +37,7 @@ class _AdminLoginState extends State<AdminLogin> {
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(10),
                 child: Text(
-                  'Admin Login',
+                  'User Login',
                   style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.w500,
@@ -51,7 +48,6 @@ class _AdminLoginState extends State<AdminLogin> {
                 height: 50.0,
               ),
               TextField(
-                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
@@ -64,7 +60,6 @@ class _AdminLoginState extends State<AdminLogin> {
                 height: 10.0,
               ),
               TextField(
-                controller: passwordController,
                 obscureText: true,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
@@ -76,16 +71,16 @@ class _AdminLoginState extends State<AdminLogin> {
               SizedBox(
                 height: 10.0,
               ),
-//              FlatButton(
-//                onPressed: () {
-////forgot password screen
-//                },
-//                textColor: Colors.blue,
-//                child: Text('Forgot Password'),
-//              ),
-//              SizedBox(
-//                height: 24.0,
-//              ),
+              FlatButton(
+                onPressed: () {
+//forgot password screen
+                },
+                textColor: Colors.blue,
+                child: Text('Forgot Password'),
+              ),
+              SizedBox(
+                height: 24.0,
+              ),
               RoundedButton(
                 title: 'Log In',
                 colour: Colors.lightBlueAccent,
@@ -97,9 +92,7 @@ class _AdminLoginState extends State<AdminLogin> {
                     final user = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     if (user != null) {
-                      emailController.clear();
-                      passwordController.clear();
-                      Navigator.pushNamed(context, AdminHomePage.id);
+                      Navigator.pushNamed(context, UserPage.id);
                     }
 
                     setState(() {
@@ -111,6 +104,13 @@ class _AdminLoginState extends State<AdminLogin> {
                     });
                     print(e);
                   }
+                },
+              ),
+              RoundedButton(
+                title: 'Register',
+                colour: Colors.lightBlueAccent,
+                onPressed: () {
+                  Navigator.pushNamed(context, UserRegister.id);
                 },
               ),
             ],

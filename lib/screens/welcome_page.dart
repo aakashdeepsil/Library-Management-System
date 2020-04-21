@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:librarymanagementsystem/components/rounded_button.dart';
 import 'package:librarymanagementsystem/screens/admin/admin_login.dart';
-import 'package:librarymanagementsystem/screens/student/student.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:librarymanagementsystem/screens/user/user_login.dart';
+
+final firestore = Firestore.instance;
 
 class WelcomePage extends StatefulWidget {
   static const String id = 'welcome_screen';
@@ -26,6 +29,19 @@ class _WelcomePageState extends State<WelcomePage>
     controller.forward();
     controller.addListener(() {
       setState(() {});
+    });
+    //getStatus();
+  }
+
+  void getStatus() {
+    var bookId = 1;
+
+    firestore
+        .collection('Library books')
+        .document(bookId.toString())
+        .get()
+        .then((DocumentSnapshot val) {
+      print(val["status"]);
     });
   }
 
@@ -88,10 +104,10 @@ class _WelcomePageState extends State<WelcomePage>
               height: 10.0,
             ),
             RoundedButton(
-              title: 'Student',
+              title: 'User',
               colour: Colors.lightBlueAccent,
               onPressed: () {
-                Navigator.pushNamed(context, Student.id);
+                Navigator.pushNamed(context, UserLogin.id);
               },
             ),
           ],
