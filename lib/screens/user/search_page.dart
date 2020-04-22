@@ -72,14 +72,6 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: AppBar(
         leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                _auth.signOut();
-                Navigator.pop(context);
-              }),
-        ],
         title: Text('User Page'),
         backgroundColor: Colors.lightBlueAccent,
       ),
@@ -114,6 +106,7 @@ class _SearchPageState extends State<SearchPage> {
 
 Widget buildResultCard(data) {
   return Card(
+    color: data['status'] == true ? Colors.blueGrey : Colors.white,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),
     ),
@@ -124,7 +117,7 @@ Widget buildResultCard(data) {
           data['name'],
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.black,
+            color: data['status'] == true ? Colors.white : Colors.black,
             fontSize: 20.0,
           ),
         ),

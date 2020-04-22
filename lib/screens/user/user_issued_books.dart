@@ -3,11 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 final firestore = Firestore.instance;
-dynamic userId;
 FirebaseUser loggedInUser;
 
 class UserIssuedBooks extends StatefulWidget {
   static const String id = 'user_issued_books_screen';
+  final String uId;
+
+  UserIssuedBooks({this.uId});
+
   @override
   _UserIssuedBooksState createState() => _UserIssuedBooksState();
 }
@@ -21,6 +24,7 @@ class _UserIssuedBooksState extends State<UserIssuedBooks> {
   @override
   void initState() {
     super.initState();
+    print(this.widget.uId);
     getCurrentUser();
   }
 
@@ -29,29 +33,22 @@ class _UserIssuedBooksState extends State<UserIssuedBooks> {
       final user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
-        getUserId();
       }
     } catch (e) {
       print(e);
     }
   }
 
-  Future<DocumentSnapshot> getBookDetails(dynamic bookId) {
-    final user =
-        firestore.collection('Library books').document(bookId.toString()).get();
+  Future getBookDetails(dynamic bookId) async {
+    final user = await firestore
+        .collection('Library books')
+        .document(bookId.toString())
+        .get();
     return user;
-  }
-
-  void getUserId() {
-    final user = firestore.collection('Users').getDocuments();
-    user.then((QuerySnapshot docs) {
-      for (int i = 0; i < docs.documents.length; ++i) {
-        if (docs.documents[i].data["email"] == loggedInUser.email) {
-          userId = i + 1;
-          print(userId);
-        }
-      }
-    });
+//    bookAuthor = user.data['author'];
+//    bookName = user.data['name'];
+//    print(bookName);
+//    print(bookAuthor);
   }
 
   @override
@@ -59,15 +56,7 @@ class _UserIssuedBooksState extends State<UserIssuedBooks> {
     return Scaffold(
       appBar: AppBar(
         leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                _auth.signOut();
-                Navigator.pop(context);
-              }),
-        ],
-        title: Text('User Page'),
+        title: Text('Issued Book Page'),
         backgroundColor: Colors.lightBlueAccent,
       ),
       body: Column(
@@ -86,15 +75,19 @@ class _UserIssuedBooksState extends State<UserIssuedBooks> {
               List<ListTile> bookWidgets = [];
 
               for (var issue in issues) {
-                if (issue['userId'] == userId.toString()) {
+                if (issue['userId'] == this.widget.uId) {
                   final bookId = issue['book_id'];
                   final returnDate = issue['Return Date'];
-                  final books = getBookDetails(bookId);
-
-                  books.then((DocumentSnapshot value) {
+                  getBookDetails(bookId).then((value) {
                     bookAuthor = value['author'];
                     bookName = value['name'];
                   });
+
+//                  print(books);
+//
+//                  getBookDetails(bookId).then((DocumentSnapshot value) {
+//
+//                  });
                   final bookWidget = ListTile(
                     title: Text('$bookName by $bookAuthor'),
                     subtitle: Text('Return Date : $returnDate'),

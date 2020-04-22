@@ -63,14 +63,6 @@ class _UserProfileState extends State<UserProfile> {
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                _auth.signOut();
-                Navigator.pop(context);
-              }),
-        ],
         title: Text('User Profile'),
         backgroundColor: Colors.lightBlueAccent,
       ),

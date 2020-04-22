@@ -17,6 +17,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   final _auth = FirebaseAuth.instance;
+  var id;
 
   @override
   void initState() {
@@ -29,9 +30,23 @@ class _UserPageState extends State<UserPage> {
       final user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
+        getUserId();
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  getUserId() async {
+    QuerySnapshot querySnapshot =
+        await firestore.collection('Users').getDocuments();
+    var users = querySnapshot.documents;
+    for (var user in users) {
+      if (user.data['email'] == loggedInUser.email) {
+        id = user.documentID;
+        print(id);
+        break;
+      }
     }
   }
 
@@ -71,7 +86,14 @@ class _UserPageState extends State<UserPage> {
               title: 'Issued Books',
               colour: Colors.lightBlueAccent,
               onPressed: () {
-                Navigator.pushNamed(context, UserIssuedBooks.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserIssuedBooks(
+                      uId: id,
+                    ),
+                  ),
+                );
               },
             ),
             SizedBox(
